@@ -1,0 +1,205 @@
+from Course import *
+from Schedule import *
+from CourseContainer import *
+
+
+class ScheduleContainer:
+
+    def __init__(self, courseList, courseContainer):
+        # courseList contains an list of all course strings chosen by user
+        # eg. courseList = ["ENGR 371","SOEN 287","COMP 232"] etc...."
+        self.courseList = courseList
+        self.schedules = []
+        #self.numberOfConflicts
+        self.courseContainer = courseContainer
+
+    def add(self,candidate):
+        self.schedules.append(candidate)
+
+    def getSchedules(self):
+        return self.schedules
+
+    def toJSON(self):
+        jsonStr = ""
+        jsonStr += '{ "schedule": ['
+
+        for i in xrange(0, len(self.schedules)):
+            jsonStr += self.schedules[i].toJSON()
+            if (i != len(self.schedules) - 1):
+                jsonStr += ','
+        
+        jsonStr += ']'
+        jsonStr += '}'
+        return jsonStr
+
+
+
+    def generateSchedules(self):
+        #courseList contains a list of all course names selected by user
+        
+        #get the course objects for each course name in courseList
+        courses = []
+        
+        for i in xrange(0,len(self.courseList)):
+            tempCourse = self.courseContainer.getCourse(self.courseList[i])
+            courses.append(tempCourse)
+
+        #get all specific classes for each course
+        numCourses = len(courses)
+        specificClassesList=[]
+        for k in xrange(0,numCourses):
+            tempList = []
+            tempList = courses[k].generateAllSpecificClasses()
+            specificClassesList.append(tempList)
+        
+        conflictCheck = ClassConflict()
+        #scheduleCon = Sctainer() #redefine Schedule Class
+
+        numErrors = 0
+        specificClassList0 = specificClassesList[0]
+
+        for i in xrange(0,len(specificClassList0)):
+            numErrors = 0
+            specificClass0 = specificClassList0[i]
+            
+            if (numCourses > 1):
+                specificClassList1 = specificClassesList[1]
+                for j in xrange(0,len(specificClassList1)):
+                    tempNumErrors = numErrors
+                    specificClass1 = specificClassList1[j]
+                    tempNumErrors+= conflictCheck.testConflict(specificClass0,specificClass1)
+                    if (numCourses > 2):
+                        numErrors = tempNumErrors
+                        specificClassList2 = specificClassesList[2]
+                        for k in xrange(0,len(specificClassList2)):
+                            tempNumErrors = numErrors
+                            specificClass2 = specificClassList2[k]
+                            tempNumErrors+= conflictCheck.testConflict(specificClass2,specificClass1)
+                            tempNumErrors+= conflictCheck.testConflict(specificClass2,specificClass0)
+                            if (numCourses > 3):
+                                numErrors = tempNumErrors
+                                specificClassList3 = specificClassesList[3]
+                                for l in xrange(0,len(specificClassList3)):
+                                    tempNumErrors = numErrors
+                                    specificClass3 = specificClassList3[l]
+                                    tempNumErrors+= conflictCheck.testConflict(specificClass3,specificClass2)
+                                    tempNumErrors+= conflictCheck.testConflict(specificClass3,specificClass1)
+                                    tempNumErrors+= conflictCheck.testConflict(specificClass3,specificClass0)
+                                    if (numCourses > 4):
+                                        numErrors = tempNumErrors
+                                        specificClassList4 = specificClassesList[4]
+                                        for m in xrange(0,len(specificClassList4)):
+                                            tempNumErrors = numErrors
+                                            specificClass4 = specificClassList4[m]
+                                            tempNumErrors+= conflictCheck.testConflict(specificClass4,specificClass3)
+                                            tempNumErrors+= conflictCheck.testConflict(specificClass4,specificClass2)
+                                            tempNumErrors+= conflictCheck.testConflict(specificClass4,specificClass1)
+                                            tempNumErrors+= conflictCheck.testConflict(specificClass4,specificClass0)
+                                            if(tempNumErrors==0):
+                                                classList = [specificClass0,specificClass1,specificClass2,specificClass3,specificClass4]
+                                                self.add(Schedule(classList))
+                                                tempNumErrors = numErrors = 0
+                                    else: 
+                                        if(tempNumErrors==0):
+                                            classList = [specificClass0,specificClass1,specificClass2,specificClass3]
+                                            self.add(Schedule(classList))
+                                            classList = []
+                                            tempNumErrors = numErrors = 0
+                                
+                            else: 
+                                if(tempNumErrors==0):
+                                    classList = [specificClass0,specificClass1,specificClass2]
+                                    self.add(Schedule(classList))
+                                    classList = []
+                                    tempNumErrors = numErrors = 0
+                    else: 
+                        if(tempNumErrors==0):
+                            classList = [specificClass0,specificClass1]
+                            self.add(Schedule(classList))
+                            classList = []
+                            tempNumErrors = numErrors = 0
+            else: 
+                if(numErrors==0):
+                    classList = [specificClass0]
+                    self.add(Schedule(classList))
+                    classList = []
+                    tempNumErrors = numErrors = 0
+
+courseMap = CourseContainer()
+"""#---------------------------
+courseMap.addClass("ENGR",371,2,3,"LEC","CC","John Smith",[1,2],"12:30|13:45","H-4","SGW",[])
+courseMap.addClass("ENGR",371,2,3,"TUT","CA","John Smith",[0,3],"12:30|13:45","H-123","SGW",[])
+courseMap.addClass("ENGR",371,2,3,"LAB","CA CI","John Smith",[2],"12:30|13:45","H-123","SGW",[])
+courseMap.addClass("ENGR",371,2,3,"LAB","CC CA CD","John Smith",[2],"12:30|13:45","H-123","SGW",[])
+#---------------------------
+courseMap.addClass("ENGR",331,2,3,"LEC","E","John Smith2",[2],"12:30|13:45","H-123","SGW",[])
+courseMap.addClass("ENGR",331,2,3,"LAB","E EC","John Smith2",[3],"12:30|13:45","H-123","SGW",[])
+#courseMap.addClass("ENGR",331,2,3,"LAB","E EA EI","John Smith2",[3],"18:30|19:45","H-123","SGW",[])
+#---------------------------
+
+courseMap.addClass("ENGR",201,2,3,"LEC","AA","John Smith2",["M|T"],"18:30|21:00","H-123","SGW",[])
+courseMap.addClass("ENGR",201,2,3,"TUT","AA AB","John Smith2",["W"],"8:30|10:00","H-123","SGW",[])
+
+
+#courseMap.addClass("ENGR",201,2,3,"TUT","AA AC","John Smith2",[4],"11:00|11:50","H-123","SGW",[])
+#courseMap.addClass("ENGR",201,2,3,"TUT","AA AD","John Smith2",[4],"13:00|13:50","H-123","SGW",[])
+#courseMap.addClass("ENGR",201,2,3,"TUT","AA AF","John Smith2",[4],"14:00|14:50","H-123","SGW",[])
+#---------------------------
+courseMap.addClass("ENGR",202,2,3,"LEC","AA","Old Bitch",[4],"8:45|10:00","H-123","SGW",[])
+courseMap.addClass("ENGR",202,2,3,"TUT","AA BB","Old Bitch",[4],"8:45|10:00","H-123","SGW",[])
+#courseMap.addClass("ENGR",202,2,3,"Lab","AA BB CC","Old Bitch",[5],"8:45|10:00","H-123","SGW",[])
+#---------------------------
+courseMap.addClass("ENCS",282,2,3,"LEC","AA","John Smith2",[3],"10:15|11:30","H-123","SGW",[])
+courseMap.addClass("ENCS",282,2,3,"TUT","AA AI","John Smith2",[1],"8:30|9:15","H-123","SGW",[])
+#courseMap.addClass("ENCS",282,2,3,"TUT","AA AJ","John Smith2",[2,4],"14:00|15:40","H-123","SGW",[])
+#courseMap.addClass("ENCS",282,2,3,"TUT","AA AK","John Smith2",[1,3],"8:45|10:25","H-123","SGW",[])
+#courseMap.addClass("ENCS",282,2,3,"LEC","AB","John Smith2",[2,4],"10:45|13:15","H-123","SGW",[])
+#courseMap.addClass("ENCS",282,2,3,"TUT","AB AL","John Smith2",[2,4],"8:45|10:25","H-123","SGW",[])
+#---------------------------
+courseMap.addClass("SOEN",287,2,3,"LEC","CC","John Smith2",[0],"10:45|13:15","H-123","SGW",[])
+courseMap.addClass("SOEN",287,2,3,"TUT","CC CE","John Smith2",[0],"14:00|15:40","H-123","SGW",[])
+courseMap.addClass("SOEN",287,2,3,"TUT","CC CF","John Smith2",[0],"8:45|10:25","H-123","SGW",[])
+courseMap.addClass("SOEN",287,2,3,"LAB","CC CF EE","John Smith2",[0],"8:45|10:25","H-123","SGW",[])
+#---------------------------
+courseMap.addClass("SOEN",331,2,3,"LEC","CC","Constantinides",["T|J"],"10:45|13:15","H-123","SGW",[])
+courseMap.addClass("SOEN",331,2,3,"TUT","CC CD","Constantinides",["W"],"14:15|15:40","H-123","SGW",[])
+courseMap.addClass("SOEN",331,2,3,"TUT","CC CF","Constantinides",["W"],"9:30|10:25","H-123","SGW",[])
+#---------------------------
+
+print "courseMap created \nPrinting Map:\n"
+
+#print courseMap.toString()
+
+courseList = ["ENGR 201","SOEN 331","ENGR 202","ENCS 282","SOEN 287"]
+courseList2 = ["SOEN 331","ENGR 201"]
+scheduleContainer = ScheduleContainer(courseList2,courseMap)
+scheduleContainer.generateSchedules()
+print "\nBack in Main, Number of schedules created:" +str(len(scheduleContainer.schedules))+"\n"
+
+schedules = scheduleContainer.schedules
+
+scheduleContainer.toJSON()
+
+for i in xrange(0,len(schedules)):
+    print "Schedule #"+str(i+1)+"/"+str(len(schedules))
+    print "Length of Schedule: "+str(len(schedules[i].selectedClasses))
+
+    #print schedules[i]
+
+#(self,courseName,courseNumber,sessionNumber,credits,type,section, professorName,days,lecTime,roomNumber,campus,prereqs):"""
+                            
+                        
+                                
+                        
+                      
+                    
+            
+    
+        
+        
+
+        
+        
+
+
+

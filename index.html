@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Flying Mongoose | Scheduler</title>
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<!--<link rel="stylesheet" href="css/style2.css" type="text/css" media="screen" />-->
+<link rel="stylesheet" href="css/slide.css" type="text/css" media="screen" />
+<script type='text/javascript' src='js/jquery-1.7.1.min.js'></script>
+<script type='text/javascript' src='js/jquery-ui-1.8.17.custom.min.js'></script>
+<script type='text/javascript' src='js/addjava.js'></script>
+<script type='text/javascript' src='js/ajax1.js'></script>
+<script type='text/javascript' src='js/buildSeptember.js'></script>
+<script type='text/javascript' src='js/schedulejavawithAJAX2.js'></script>
+<!--<script type="text/javascript" src="js/jQuery.js"></script>-->
+<script type="text/javascript" src="js/login.js"></script>
+<script type="text/javascript" src="js/register.js"></script>
+<script src="js/slide.js" type="text/javascript"></script>
+<link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script>
+  <script>
+  $(document).ready(function() {
+    $("input#input").autocomplete({
+    source: ["ENGR 107", "ENGR 108", "ENGR 201", "ENGR 202", "ENGR 207", "ENGR 208", "ENGR 107", "ENGR 213", "ENGR 233", "ENGR 243", "ENGR 244", "ENGR 251", "ENGR 301", "ENGR 307", "ENGR 308", "ENGR 311", "ENGR 361", "ENGR 371", "ENGR 392", "ENGR 411", "COMP 107","COMP 108","COMP 207", "COMP 208", "COMP 228", "COMP 232", "COMP 233", "COMP 248", "COMP 249", "COMP 335", "COMP 346", "COMP 348", "COMP 352", "COMP 353", "COMP 354", "COMP 371", "COMP 376", "COMP 490", "COMP 492", "ELEC 275", "ENCS 272", "ENCS 282", "SOEN 287"]
+	
+});
+ $("input#input2").autocomplete({
+    source: ["COMP 108","COMP 201","COMP 208","COMP 218","COMP 228","COMP 232","COMP 233","COMP 248","COMP 249","COMP 335","COMP 339","COMP 345","COMP 346","COMP 348","COMP 352","COMP 353","COMP 354","COMP 371","COMP 361","COMP 376","COMP 445","COMP 451","COMP 472","COMP 473","COMP 474","COMP 478","COMP 479","COMP 490","COMP 492","COMP 495","ELEC 275","ENCS 282","ENGR 108","ENGR 201","ENGR 202","ENGR 208","ENGR 213","ENGR 233","ENGR 242","ENGR 251","ENGR 301","ENGR 308","ENGR 311","ENGR 361","ENGR 371","ENGR 391","ENGR 392","ENGR 411","ENGR 417","SOEN 287","SOEN 341","SOEN 342","SOEN 343","SOEN 384","SOEN 387","SOEN 422","SOEN 423","SOEN 490"]
+	
+});
+ $("input#input3").autocomplete({
+    source: ["COMP 201","COMP 218","COMP 228","COMP 232","COMP 248","COMP 233","COMP 249","COMP 326","COMP 335","COMP 345","COMP 346","COMP 348","COMP 352","COMP 353","COMP 354","COMP 361","COMP 367","COMP 371","COMP 426","COMP 428","COMP 442","COMP 445","COMP 465","COMP 472","COMP 474","COMP 476","COMP 477","COMP 490","COMP 492","COMP 495","SOEN 228","SOEN 287","SOEN 331","SOEN 341","SOEN 344","SOEN 345","SOEN 357","SOEN 385","SOEN 390","SOEN 487","ELEC 275","ENGR 201","ENGR 202","ENGR 213","ENGR 233","ENGR 242","ENGR 243","ENGR 244","ENGR 245","ENGR 251","ENGR 301","ENGR 361","ENGR 371","ENGR 391","ENGR 392","ENGR 411","ENGR 418","ENCS 282"]
+	
+});
+  });
+  </script>
+<script type='text/javascript'>
+function fillIfEmpty(content)
+{
+	if (content.value == "")
+	{
+		content.value = "Enter course number...";
+	}
+}
+
+function eraseContent(content)
+{
+		content.value = "";
+}
+
+</script>
+
+</head>
+
+<body >
+<div id="toppanel">
+	<div id="panel">
+		<div class="content clearfix">
+			<div class="left">
+				<h7>Flying Mongoose Scheduler</h7>
+                <p id="msg"></p>
+			</div>
+			<div class="left">
+				<!-- Login Form -->
+				<form class="clearfix" id="frm" action="#" method="post">
+					<h7>Member Login</h7>
+					<label class="grey" for="user">Username:</label>
+					<input class="field" type="text" name="user" id="user" value="" size="23" />
+					<label class="grey" for="pass">Password:</label>
+					<input class="field" type="password" name="pass" id="pass" size="23" />
+	            	<label><input name="rememberme" id="rememberme" type="checkbox" checked="checked" value="forever" /> &nbsp;Remember me</label>
+        			<div class="clear"></div>
+					<input type="submit" name="submit" value="Login" class="bt_login" />
+					<!--<a class="lost-pwd" href="#">Lost your password?</a>-->
+				</form>
+			</div>
+			<div class="left right">
+				<!-- Register Form -->
+				<form class="clearfix" id="register" method="post">
+					<h7>Not a member yet? Sign Up!</h7>
+					<label class="grey" for="duser">Desired Username:</label>
+					<input class="field" type="text" name="duser" id="duser" value="" size="23" />
+					<label class="grey" for="pwd1">Password:</label>
+					<input class="field" type="password" name="pwd1" id="pwd1" size="23" />
+                    <label class="grey" for="pwd2">Confirm Password:</label>
+					<input class="field" type="password" name="pwd2" id="pwd2" size="23" />
+					<input type="submit" name="submit" value="Register" class="bt_register" />
+				</form>
+			</div>
+		</div>
+</div> <!-- /login -->
+	<!-- The tab on top -->
+	<div class="tab">
+		<ul class="login">
+			<li class="left">&nbsp;</li>
+			<li id="loginInfo">Hello Guest!</li>
+			<li class="sep">|</li>
+			<li id="toggle">
+				<a id="open" class="open" href="#">Log In | Register</a>
+				<a id="close" style="display: none;" class="close" href="#">Close Panel</a>
+			</li>
+			<li class="right">&nbsp;</li>
+		</ul>
+	</div> <!-- / top -->
+</div> <!--panel -->
+    <div id="container" style="display:none">
+		<div id="content" style="padding-top:100px;">
+<div id="wrapper">
+<a class ="logout" href=""> Logout </a>
+<div id="header">
+<img class="logo" src="images/Logo.png" alt="Flying Mongoose Coropration"/>
+	<h1> The Flying Mongoose Scheduler</h1>
+</div><!--END OF HEADER-->
+
+<div id="content">
+
+<div id="calendar">
+	</div><!--END OF CALENDAR-->
+	<div id="sidebar">
+
+		<h4> <img onclick="showSequences(this)" class="icon" src ="images/Right Arrow.png"/> VIEW SEQUENCES</h4>
+		<div id="sequences" style="display:none">
+		<button class="button2" onclick="window.open('Regular September entry.html')" > Regular September Entry</button><br/>
+		<button class="button2" onclick="window.open('Regular January entry.html')"  > Regular January Entry</button><br/>
+		<button class="button2" onclick="window.open('Coop september entry.html')" > Coop September Entry</button><br/>
+		</div>
+        <h4><img onclick="showConstraints(this)" class="icon" src ="images/Right Arrow.png"/> CONSTRAINTS </h4>
+        
+    	<form>
+        <table id="constraint-table" style="display:none">
+        	<tr><td>Mornings Off</td><td><INPUT class="checkbox" type="checkbox"  id="morning"/></td></tr>
+        	
+            <tr><td>Evenings Off</td><td><INPUT class="checkbox" type="checkbox"  id="evening"/></td></tr>
+        	
+            <tr><td>Mondays Off</td><td><INPUT class="checkbox" type="checkbox" id="monday"/></td></tr>
+        	
+            <tr><td>Tuesdays Off</td><td><INPUT class="checkbox" type="checkbox" id="tuesday"/></td></tr>
+        	
+            <tr><td>Wednesdays Off</td><td><INPUT class="checkbox" type="checkbox"  id="wednesday"/></td></tr>
+        	
+            <tr><td>Thursdays Off</td><td><INPUT class="checkbox" type="checkbox" id="thursday"/></td></tr>
+        	
+            <tr><td>Fridays Off</td><td><INPUT class="checkbox" type="checkbox" id="friday"/></td></tr>
+            </table>
+        	
+        </form>
+        
+		<h4>COURSE SELECTION</h4>
+  		<h4>Semester</h4>
+        
+        <input type="radio" id="summer" name="season" onclick="selectSeason()" style="visibility:hidden"/>
+        <input type="radio" id="fall" name="season" onclick="selectSeason()"  /> Fall
+        <input type="radio" id="winter" name="season" onclick="selectSeason()" /> Winter<br/><br/>
+        
+  
+        <input id="input"  value="Enter course number..." onfocus="eraseContent(this)" onblur="fillIfEmpty(this)" style="display:none" />
+		<input id="input2"  value="Enter course number..." onfocus="eraseContent(this)" onblur="fillIfEmpty(this)" style="display:none"/>
+        <input id="input3"  value="Enter course number..." onfocus="eraseContent(this)" onblur="fillIfEmpty(this)" style="display:none"/>
+      <!--<input type = "text"  id = "input" />-->
+	  <button id="Add-summer" class = "button"  onclick="addRow()" style="display:none"/><img class="icon"  src ="images/Add.png"/>Add Class</button>
+	   <button id="Add-Fall" class = "button"  onclick="addRow2()" style="display:none" /><img class="icon"  src ="images/Add.png" />Add Class</button>
+       <button id="Add-Winter"class = "button"  onclick="addRow3()" style="display:none" /><img class="icon"  src ="images/Add.png" />Add Class</button>
+       <br/>
+	   
+        <div id="addclasses"><TABLE id="dataTable" >
+        <TR style="visibility:hidden">
+           
+            <TD>  </TD>
+			 <TD><INPUT class="checkbox" type="checkbox" name="chk"/></TD>
+        </TR>
+    </TABLE></div>
+	
+    
+    <button class = "button" id="remove" onclick="deleteRow('dataTable')" style="visibility:hidden"><img class="icon"  src ="images/minus.png"/> Remove Class</button><br/><br/>
+	   <form>
+        	<input class = "button" id="generate" type='button' 	onclick="selectlectures()" 	value='GENERATE SCHEDULE' style="visibility:hidden"/>
+        </form>
+
+        <br/><br/>
+        <button class = "button" id="print" style="visibility:hidden" onclick="window.print()"> <img class="icon"  src ="images/Printer.png"/> Print Schedule</button>
+
+	</div><!--END OF SIDEBAR-->
+
+
+<div id="footer"><p> Flying Mongoose Corporation &#169; </p></div><!--END OF FOOTER-->
+</div><!--END OF content -->
+
+</div><!--END OF wrapper-->
+		</div><!-- / content -->
+	</div><!-- / container -->
+
+
+</body>
+</html>

@@ -1,0 +1,258 @@
+
+function firstBuilder(schedArray2){
+
+	var schedArray = new Array();
+	var addSem = 0;
+	var counter = 0;
+	var realStartTime;
+	var realEndTime;
+
+	for(var i = 0; i < schedArray2.length; i++)
+	{
+		for(var j = 0; j < schedArray2[i].length; j++)
+		{
+			realStartTime = parseInt(schedArray2[i][j].start_hour) * 60 + parseInt(schedArray2[i][j].start_minutes);
+			realEndTime = parseInt(schedArray2[i][j].end_hour) * 60 + parseInt(schedArray2[i][j].end_minutes);
+		
+			if(document.getElementById("morning").checked == true && realStartTime < 600)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("evening").checked == true && realEndTime > 1140)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("monday").checked == true && schedArray2[i][j].date == 0)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("tuesday").checked == true && schedArray2[i][j].date == 1)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("wednesday").checked == true && schedArray2[i][j].date == 2)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("thursday").checked == true && schedArray2[i][j].date == 3)
+			{
+				addSem = 1;
+			}
+			
+			if(document.getElementById("friday").checked == true && schedArray2[i][j].date == 4)
+			{
+				addSem = 1;
+			}
+			
+		}
+		
+		if(addSem == 0)
+		{
+			schedArray[counter] = schedArray2[i];
+			counter++;
+		}	
+		
+		addSem = 0;
+	}
+	
+	
+	if(schedArray.length == 0)
+		alert("No schedules found.");
+	else
+		builder(schedArray);
+
+}
+
+function builder(schedArray2){
+
+	var schedArray = schedArray2;
+	for(var a = 0; a < schedArray.length; a++)
+	{
+		for(var b = 0; b < schedArray[a].length; b++)
+		{
+			schedArray[a][b].real_start_time = parseInt(schedArray[a][b].start_hour) * 60 + parseInt(schedArray[a][b].start_minutes);
+			
+			schedArray[a][b].real_end_time = parseInt(schedArray[a][b].end_hour) * 60 + parseInt(schedArray[a][b].end_minutes);
+		}
+	}
+
+	var output = "";
+	for(var r = 0; r < schedArray.length; r++)
+	{
+		output+="<div id='text'><table>";
+		output+="<tr><h2>SCHEDULE #" + (r+1) + "</h2></tr>";
+		output+="<tr><h6>>>> CLASSES</h6></tr>";
+		hasBeenPrinted = new Array();
+		
+		for(var m = 0; m < schedArray[r].length; m++)
+		{
+			if(existsInArray(schedArray[r][m].name, hasBeenPrinted) == false)
+			{
+				output+="<tr><td>"+"&nbsp;&nbsp;&raquo;&nbsp;"+ schedArray[r][m].name + " - " + schedArray[r][m].type + " " + schedArray[r][m].section + "</td></tr>";
+				hasBeenPrinted[m] = schedArray[r][m].name; 
+			}
+		}
+		
+		
+		output+="</table></div>";
+		
+		var numClasses = schedArray[r].length;	
+		var saveNames = new Array();
+		var startTime = 10000;
+		var endTime = 0;
+
+		
+		for(var w = 0; w < schedArray[r].length; w++)
+		{
+
+			if(schedArray[r][w].real_start_time < startTime)
+				startTime = schedArray[r][w].real_start_time;
+		}
+		
+		
+		for(var w = 0; w < schedArray[r].length; w++)
+		{
+
+			if(schedArray[r][w].real_end_time > endTime)
+				endTime = schedArray[r][w].real_end_time;
+		}
+	
+		timeCounter = startTime;
+		var timeCounter2 = endTime
+
+	
+		classPrintCounter = new Array();	
+		for(var i = 0; i < 5; i++)
+		{
+			classPrintCounter[i] = null;
+		}	
+		
+	
+		output += "<div id ='tables'><table class='scheduler'>";
+		output += "<tr class='table-top'><td><center>Time</center></td><td><center>Mon</center></td><td><center>Tue</center></td><td><center>Wed</center></td><td><center>Thu</center></td><td><center>Fri</center></td></tr>";
+		
+		while(timeCounter < endTime)			
+		{	
+								
+			newClassDates = new Array(5);		// "A NEW CLASS SHOULD BE ADDED TO THIS SLOT"
+	
+		
+			for(var i = 0; i < numClasses; i++) 	
+			{		
+	
+				
+				if((schedArray[r][i].real_start_time - timeCounter) < 15 && (schedArray[r][i].real_start_time - timeCounter) >= 0)
+				{					
+					newClassDates[schedArray[r][i].date] = 0;					
+					saveNames[schedArray[r][i].date] = schedArray[r][i].name + "<br />" + schedArray[r][i].type + " " + schedArray[r][i].section;					
+					classPrintCounter[schedArray[r][i].date] = (schedArray[r][i].real_end_time - schedArray[r][i].real_start_time)/15;    
+					classPrintCounter[schedArray[r][i].date] = intval(classPrintCounter[schedArray[r][i].date]);
+				}			
+			}	
+		
+			
+			output +=  "<tr>";		
+			output +=  "<td>";
+			output +=  getHour(timeCounter);				
+			output +=  "</td>";								  // This <td> is always required; makes the TIME column
+			
+			for(var j = 0; j < 5; j++)					    
+			{
+				
+				if(newClassDates[j] != null)   // IF A CLASS NEEDS TO BE ADDED...
+				{
+					output +=  "<td rowspan=" + classPrintCounter[j] + " style='background-color: #CCFFCC;'><center>" + saveNames[j] + "</center></td>";
+					newClassDates[j] = null;
+				}
+							
+				else if(classPrintCounter[j] != null)         // IF THIS COLUMN IS PRINTING A CLASS...
+				{
+															  // DO NOTHING. SKIP THIS ITERATION.
+				}			
+	
+				else
+					output +=  "<td width = 100px>&nbsp;</td>";	   // ELSE, PRINT AN EMPTY <TD>.
+			}
+			
+			output +=  "</tr>";
+			timeCounter += 15;
+		
+			
+			for(var i = 0; i < 5; i++)						// Decrement print counters
+			{
+				if(classPrintCounter[i] != null)
+				{
+					classPrintCounter[i]--;
+					
+					if(classPrintCounter[i] == 0)				// Delete if necessary
+					{
+						classPrintCounter[i] = null;
+					}
+				}
+			}
+															
+		}
+		 
+		output += "</table></div><br \><br \><br \><br \><br \>";
+	}
+	
+
+	
+	document.getElementById('calendar').innerHTML=output;
+	document.getElementById("print").style.visibility = 'visible';
+    //$('#calendar').html(output);
+}
+
+
+function intval (mixed_var, base) {
+    
+    var tmp;
+    var type = typeof(mixed_var);
+    
+    if (type === 'boolean') 
+    {
+       return +mixed_var;
+    } 
+    else if (type === 'string') 
+    {
+       tmp = parseInt(mixed_var, base || 10);
+       return (isNaN(tmp) || !isFinite(tmp)) ? 0 : tmp;    } else if (type === 'number' && isFinite(mixed_var)) {
+       return mixed_var | 0;
+    } 
+    else 
+    {
+       return 0;
+    }
+}
+
+function existsInArray(element, array)
+{
+	for(var j = 0; j < array.length; j++)
+	{
+		if(element == array[j])
+		{
+			return true;
+		}
+	}	
+	return false;
+}
+
+function getHour(time){
+
+		var hour = intval(time/60);
+		var minute = time % 60;
+
+		if(minute == 0)
+		{
+			return hour + ":" + minute + "0";
+		}
+		else
+			return hour + ":" + minute;
+		
+	}
+	
